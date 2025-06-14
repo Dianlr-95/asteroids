@@ -1,13 +1,24 @@
 import pygame
+from asteroid import Asteroid
 from constants import *
 from player import Player
 
 def main():
+    # Initializing------------------------
     pygame.init()
+
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    dt = 0
     clock = pygame.time.Clock()
+
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    asteroids = pygame.sprite.Group()
+    Asteroid.containers = (asteroids, updatable, drawable)
+    Player.containers = (updatable, drawable)
+
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    delta_time = 0
+    
 
     # Start game loop---------------------
 
@@ -16,12 +27,14 @@ def main():
             if event.type == pygame.QUIT:
                 return
 
-        player.update(dt)
+        updatable.update(delta_time)
         screen.fill("black")
-        player.draw(screen)
+        for item in drawable:
+            item.draw(screen)
+
         pygame.display.flip()
 
-        dt = clock.tick(60) / 1000
+        delta_time = clock.tick(60) / 1000
 
 
     # End game loop-----------------------
